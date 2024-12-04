@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Avatar, Button, Drawer, List, Menu } from 'antd';
 import { useState } from 'react';
@@ -136,7 +137,7 @@ export default function Home() {
         <List
           itemLayout="horizontal"
           dataSource={listData}
-          renderItem={(item, index) => (
+          renderItem={(item) => (
             <List.Item>
               <List.Item.Meta
                 avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${item.id}`} />}

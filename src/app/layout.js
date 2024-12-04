@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import localFont from 'next/font/local';
 import './globals.css';
 
@@ -19,8 +21,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
     </html>
   );
 }
+
+RootLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
