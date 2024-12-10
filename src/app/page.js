@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+// import OpenAI from 'openai';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Avatar, Button, Drawer, List, Menu } from 'antd';
 import { useState } from 'react';
@@ -57,7 +58,7 @@ export default function Home() {
     {
       key: 'alipay',
       label: (
-        <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+        <a href='https://ant.design' target='_blank' rel='noopener noreferrer'>
           Navigation Four - Link
         </a>
       ),
@@ -75,11 +76,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [listData, setListData] = useState([]);
   const [localAPIData, setLocalAPIData] = useState('');
+  const [aiData, setAIData] = useState('');
 
   const showLoading = async () => {
     setOpen(true);
     setLoading(true);
-    const { status } = await fetch('http://localhost:5000/status', {
+
+    const { status } = await fetch('http://localhost:5000/v1/status', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -96,16 +99,32 @@ export default function Home() {
         description: data?.Description,
       };
     });
+
     setListData(list);
+
+    const { data } = await fetch('http://localhost:5000/v1/ask', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        authorization:
+          'Bearer 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',
+      },
+      method: 'POST',
+      body: JSON.stringify({ content: 'Say Good Morning' }),
+    }).then((data) => data.json());
+
+    setAIData(data?.message?.content);
+
     setLoading(false);
   };
 
   return (
     <div className={styles.page}>
-      <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
+      <Menu onClick={onClick} selectedKeys={[current]} mode='horizontal' items={items} />
       <div>{`TEST MY PAGE - ${localAPIData}`}</div>
+      <div>{`AI Response - ${aiData}`}</div>
       <div>
-        <Button type="primary" onClick={showLoading}>
+        <Button type='primary' onClick={showLoading}>
           Open Drawer
         </Button>
       </div>
@@ -113,13 +132,13 @@ export default function Home() {
         closable
         destroyOnClose
         title={<p>Loading Drawer</p>}
-        placement="right"
+        placement='right'
         open={open}
         loading={loading}
         onClose={() => setOpen(false)}
       >
         <Button
-          type="primary"
+          type='primary'
           style={{
             marginBottom: 16,
           }}
@@ -135,13 +154,13 @@ export default function Home() {
           renderItem={(item) => <List.Item>{item}</List.Item>}
         /> */}
         <List
-          itemLayout="horizontal"
+          itemLayout='horizontal'
           dataSource={listData}
           renderItem={(item) => (
             <List.Item>
               <List.Item.Meta
                 avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${item.id}`} />}
-                title={<a href="https://ant.design">{item.title}</a>}
+                title={<a href='https://ant.design'>{item.title}</a>}
                 description={item.description}
               />
             </List.Item>
