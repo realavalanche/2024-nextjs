@@ -103,11 +103,14 @@ export default function Home() {
 
     setListData(list);
 
+    const key = process.env.NEXT_PUBLIC_AUTH;
+    console.log(key);
+
     const { data } = await fetch('http://localhost:5000/v1/ask', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        authorization: process.env.REACT_APP_AUTH,
+        authorization: key,
       },
       method: 'POST',
       body: JSON.stringify({ content: 'Say Good Morning' }),

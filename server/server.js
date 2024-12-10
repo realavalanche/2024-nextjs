@@ -34,7 +34,7 @@ app.post('/v1/ask', async (request, response) => {
   const authHeader = request.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
 
-  if (token == null) return res.status(401); // No token present
+  if (token == null) return response.status(401); // No token present
 
   try {
     const client = new OpenAI({
