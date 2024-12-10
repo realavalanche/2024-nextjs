@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use client';
 
 import React from 'react';
@@ -106,8 +107,7 @@ export default function Home() {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        authorization:
-          'Bearer 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',
+        authorization: process.env.REACT_APP_AUTH,
       },
       method: 'POST',
       body: JSON.stringify({ content: 'Say Good Morning' }),
