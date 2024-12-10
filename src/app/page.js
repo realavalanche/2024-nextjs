@@ -103,7 +103,7 @@ export default function Home() {
 
     setListData(list);
 
-    const key = process.env.NEXT_PUBLIC_AUTH;
+    const key = process.env.NEXT_PUBLIC_KEY;
     console.log(key);
 
     const { data } = await fetch('http://localhost:5000/v1/ask', {
