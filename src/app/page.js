@@ -124,7 +124,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <Menu onClick={onClick} selectedKeys={[current]} mode='horizontal' items={items} />
-      <div>{`SHOW STATUS REFRESH HERE - ${localAPIData}`}</div>
+      <div>{`SHOW STATUS REFRESH HERE NEXT - ${localAPIData}`}</div>
       <div>{`AI Response - ${aiData}`}</div>
       <div>
         <Button type='primary' onClick={showLoading}>
