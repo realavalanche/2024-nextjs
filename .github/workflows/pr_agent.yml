@@ -18,3 +18,7 @@ on:
           env:
             OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            OPENAI.ORG: "UnOutsource"
+            PR_QUESTIONS.ENABLE_HELP_TEXT: "true"
+            PR_DESCRIPTION.ADD_ORIGINAL_USER_DESCRIPTION: "true"
+            PR_DESCRIPTION.ENABLE_HELP_TEXT: "true"
