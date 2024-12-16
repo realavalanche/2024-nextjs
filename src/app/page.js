@@ -4,7 +4,7 @@
 import React from 'react';
 // import OpenAI from 'openai';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Avatar, Button, Drawer, List, Menu } from 'antd';
+import { Avatar, Button, Drawer, List, Card, Menu } from 'antd';
 import { useState } from 'react';
 import styles from './page.module.css';
 
@@ -78,6 +78,7 @@ export default function Home() {
   const [listData, setListData] = useState([]);
   const [localAPIData, setLocalAPIData] = useState('');
   const [aiData, setAIData] = useState('');
+  const [usersData, setUsersData] = useState([]);
 
   const showLoading = async () => {
     setOpen(true);
@@ -92,6 +93,7 @@ export default function Home() {
       body: JSON.stringify({ a: 1, b: 2 }),
     }).then((data) => data.json());
     setLocalAPIData(status);
+
     const response = await fetch('https://api.restful-api.dev/objects').then((data) => data.json());
     const list = response.map(({ id, name: title, data }) => {
       return {
@@ -102,6 +104,19 @@ export default function Home() {
     });
 
     setListData(list);
+
+    const { users } = await fetch('http://localhost:5000/v1/users', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      // body: JSON.stringify({ a: 1, b: 2 }),
+    }).then((data) => data.json());
+    const modifiedUsers = users.map((ele) => {
+      return { name: ele.name, email: ele.email };
+    });
+    setUsersData(modifiedUsers);
 
     const key = process.env.NEXT_PUBLIC_KEY;
     console.log(key);
@@ -125,6 +140,18 @@ export default function Home() {
     <div className={styles.page}>
       <Menu onClick={onClick} selectedKeys={[current]} mode='horizontal' items={items} />
       <div>{`SHOW STATUS REFRESH HERE NEXT - ${localAPIData}`}</div>
+      <List
+        grid={{
+          gutter: 16,
+          column: usersData.length,
+        }}
+        dataSource={usersData}
+        renderItem={(item) => (
+          <List.Item>
+            <Card title={item.name}>{item.email}</Card>
+          </List.Item>
+        )}
+      />
       <div>{`AI Response - ${aiData}`}</div>
       <div>
         <Button type='primary' onClick={showLoading}>
