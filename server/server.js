@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const express = require('express');
-// const connectDB = require('./database/db');
+const connectDB = require('./database');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
@@ -8,8 +8,7 @@ const path = require('path');
 const { OpenAI } = require('openai');
 
 const app = express();
-// require('./database');
-// connectDB();
+connectDB();
 const PORT = process.env.PORT || 5000;
 
 const buildPath = path.join(__dirname, '..', 'build');
@@ -54,9 +53,8 @@ app.post('/v1/ask', async (request, response) => {
   }
 });
 
-// mongoose.connect('mongodb+srv://sid317:Computer@4@next-cluster.jisoo.mongodb.net/?retryWrites=true&w=majority&appName=next-cluster')
 const users = require('./api/users');
-app.use('/api/users', users);
+app.use('/v1', users);
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'build', 'index.html'), (err) => {
