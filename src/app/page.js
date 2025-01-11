@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 // import OpenAI from 'openai';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Avatar, Button, Drawer, List, Card, Menu } from 'antd';
@@ -66,6 +66,10 @@ export default function Home() {
     },
   ];
 
+  useEffect(() => {
+    showLoading(true);
+  }, []);
+
   const [current, setCurrent] = useState('mail');
 
   const onClick = (e) => {
@@ -80,8 +84,7 @@ export default function Home() {
   const [aiData, setAIData] = useState('');
   const [usersData, setUsersData] = useState([]);
 
-  const showLoading = async () => {
-    setOpen(true);
+  const showLoading = async (noDrawer = false) => {
     setLoading(true);
 
     const { status } = await fetch('http://localhost:5000/v1/status', {
@@ -94,16 +97,36 @@ export default function Home() {
     }).then((data) => data.json());
     setLocalAPIData(status);
 
-    const response = await fetch('https://api.restful-api.dev/objects').then((data) => data.json());
-    const list = response.map(({ id, name: title, data }) => {
-      return {
-        id,
-        title,
-        description: data?.Description,
-      };
-    });
+    if (!noDrawer) {
+      setOpen(true);
+      const response = await fetch('https://api.restful-api.dev/objects').then((data) =>
+        data.json(),
+      );
+      const list = response.map(({ id, name: title, data }) => {
+        return {
+          id,
+          title,
+          description: data?.Description,
+        };
+      });
 
-    setListData(list);
+      setListData(list);
+
+      const key = process.env.NEXT_PUBLIC_KEY;
+      console.log(key);
+
+      const { data } = await fetch('http://localhost:5000/v1/ask', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          authorization: key,
+        },
+        method: 'POST',
+        body: JSON.stringify({ content: 'What time is it right now?' }),
+      }).then((data) => data.json());
+
+      setAIData(data?.message?.content);
+    }
 
     const { users } = await fetch('http://localhost:5000/v1/users', {
       headers: {
@@ -117,21 +140,6 @@ export default function Home() {
       return { name: ele.name, email: ele.email };
     });
     setUsersData(modifiedUsers);
-
-    const key = process.env.NEXT_PUBLIC_KEY;
-    console.log(key);
-
-    const { data } = await fetch('http://localhost:5000/v1/ask', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        authorization: key,
-      },
-      method: 'POST',
-      body: JSON.stringify({ content: 'Say Good Morning' }),
-    }).then((data) => data.json());
-
-    setAIData(data?.message?.content);
 
     setLoading(false);
   };
@@ -154,7 +162,7 @@ export default function Home() {
       />
       <div>{`AI Response - ${aiData}`}</div>
       <div>
-        <Button type='primary' onClick={showLoading}>
+        <Button type='primary' onClick={() => showLoading()}>
           Open Drawer
         </Button>
       </div>
@@ -172,7 +180,7 @@ export default function Home() {
           style={{
             marginBottom: 16,
           }}
-          onClick={showLoading}
+          onClick={() => showLoading()}
         >
           Reload
         </Button>
